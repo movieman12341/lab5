@@ -1,8 +1,33 @@
-// Strongly connected components using Kosaraju's DFS technique
-// BPW, 4/2003
+/*
+Luke Owens
+11/27/18
+
+to run my code, type:
+gcc -o exe main.c
+./exe
+
+brief summary/requirements:
+
+Design, code, and test a C program to determine strongly connected components for a directed graph. 
+
+a. Input is to be read from standard input (like the first four assignments):
+1. The first line is two integer values: n, the number of vertices, and m, the number of edges.
+2. The remaining m lines will each contain two values defining an edge: a tail name (string of no more than 25
+characters) and a head name (another string).
+b. While reading the input, new vertex names should be stored in a double hash table along with consecutively assigned
+vertex numbers. The first line of your output should indicate the size of your double hash table.
+In addition to the double hash table, a table of vertex names will be needed. This is needed when printing your results
+for the end user.
+If the input does not have exactly n different names, give a disparaging message and stop.
+The assigned vertex numbers are used to build compressed adjacency lists (Notes 14).
+c. Perform Kosaraju’s SCC algorithm (Notes 14). The elements of each SCC must be output using the vertex names, not
+numbers.
+
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define WHITE 0
 #define GRAY 1
@@ -11,7 +36,7 @@
 //protos
 int addAscii(char string[]);
 int getPrimeVal(int nVal);
-
+int getHash(int hasharr[], char str[], int asciiVal, int m);
 
 
 
@@ -41,6 +66,12 @@ int tailThenHead(const void* xin, const void* yin)
 		return x->head - y->head;
 }
 
+//globals
+int m;
+char **strTable;//string table
+static int count = 0;
+
+
 void read_input_file()
 {
 	int a, b, i, j;
@@ -55,26 +86,43 @@ void read_input_file()
 		printf("edgeTab malloc failed %d\n", __LINE__);
 		exit(0);
 	}
+	m = getPrimeVal(n);
+	int *hash = (int*)calloc(m, sizeof(int));//hash table
+	strTable = (char**)calloc(m, sizeof(char*));//string table
 
+	for (i = 0; i < m; i++)
+	{
+		strTable[i] = (char*)calloc(26, sizeof(char));//fills up empty 2d cost array
+		hash[i] = (-1); // Flag all slots as never-used
+	}
+
+
+	if (!hash || !strTable) {
+		printf("malloc failed\n");
+		exit(0);
+	}
+
+	
 	// read edges, NOW AS STRING. end result = a  and b store values after hash table is done
 	for (i = 0; i<e; i++)
 	{
 		scanf("%s %s", &str1, &str2);
-		int asciiVal1 = addAscii(&str1);
-		int asciiVal2 = addAscii(&str2);
-		int m = getPrimeVal(n);
+		int asciiVal1 = addAscii(str1); //gets ascii key for the string
+		int asciiVal2 = addAscii(str2);//gets ascii key for the string
+		int hash1Val = getHash(hash, str1, asciiVal1, m); //gets unique key for the string
+		int hash2Val = getHash(hash, str2, asciiVal2, m); //gets unique key for the string
+
+		a = hash1Val;
+		b = hash2Val;
 
 
-
-
-
-		/*if (a<0 || a >= n || b<0 || b >= n)
+		if (a<0 || a >= n || b<0 || b >= n)
 		{
 			printf("Invalid input %d %d at %d\n", a, b, __LINE__);
 			exit(0);
 		}
 		edgeTab[i].tail = a;
-		edgeTab[i].head = b;*/
+		edgeTab[i].head = b;
 	}
 
 	// sort edges
@@ -170,7 +218,7 @@ void DFSvisit2(int u)
 {
 	int i, v;
 
-	printf("%d\n", u); // Indicate that u is in SCC for this restart
+	printf("%s\n", strTable[u]); // Indicate that u is in SCC for this restart 
 	vertexStatus[u] = GRAY;
 
 	for (i = firstEdge[u]; i<firstEdge[u + 1]; i++)
@@ -206,6 +254,9 @@ int main()
 
 	reverseEdges();
 
+
+	//other print double hash table????
+
 	// DFS code
 	for (u = 0; u<n; u++)
 		vertexStatus[u] = WHITE;
@@ -226,12 +277,12 @@ int main()
 
 int addAscii(char string[])
 {
-	int i = 0, sum = 0, len = strlen(string);
-	for (; i < len; i++)
+	int i = 0, key = 0, count = 0;
+	for (; string[i] != 0; i++)
 	{
-		sum += string[i]; //sums all the ascii values together for the given string
+		key = (count * 10 + string[i]) % m; //gets ascii values and puts them in key
 	}
-	return sum;
+	return key;
 }
 
 int getPrimeVal(int nVal)
@@ -262,3 +313,45 @@ int getPrimeVal(int nVal)
 		}
 	}
 }
+
+int getHash(int hasharr[], char str[], int asciiVal, int m)
+{
+	int i, h1, h2, strcmpVal = 5;
+	// Scan probe sequence until unused slot or key is found.
+	i = h1 = asciiVal % m;
+	h2 = asciiVal % (m - 1) + 1;
+
+	if (hasharr[i] == -1) //empty table value to fill
+	{
+		hasharr[i] = count;			//count stores the index of the string table array
+		strcpy(strTable[count], str); //copies the input string to the string table
+		count++;
+		return hasharr[i];
+	}
+	else //not a free slot, so loop until free
+	{
+		while (1)
+		{
+			if (hasharr[i] == -1) //empty table value to fill
+			{
+				hasharr[i] = count;			//count stores the index of the string table array
+				strcpy(strTable[count], str); //copies the input string to the string table
+				count++;
+				return hasharr[i];
+			}
+
+			else if (hasharr[i] != -1 && strcmp(str, strTable[hasharr[i]]) == 0) //not an empty slot.
+															//		strings are the same, so return same
+													//index value
+			{
+				return hasharr[i];
+			}
+			else//skip hash table values of i with h2 values
+			{
+				i = (i + h2) % m;
+			}
+			
+		}
+	}
+}
+

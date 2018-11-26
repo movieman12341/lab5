@@ -1,14 +1,11 @@
 ﻿  main.c
-c:\users\luke\desktop\lab5\lab5\main.c(63): warning C4047: 'function': 'char *' differs in levels of indirection from 'char (*)[25]'
-c:\users\luke\desktop\lab5\lab5\main.c(63): warning C4024: 'addAscii': different types for formal and actual parameter 1
-c:\users\luke\desktop\lab5\lab5\main.c(46): warning C4101: 'a': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(48): warning C4101: 'work': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(46): warning C4101: 'b': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(49): warning C4101: 'ptr': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(137): warning C4101: 'work': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(138): warning C4101: 'ptr': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(187): warning C4101: 'k': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(187): warning C4101: 'j': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(187): warning C4101: 'nextDFS': unreferenced local variable
-c:\users\luke\desktop\lab5\lab5\main.c(229): warning C4013: 'strlen' undefined; assuming extern returning int
+c:\users\luke\desktop\lab5\lab5\main.c(79): warning C4101: 'work': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(80): warning C4101: 'ptr': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(185): warning C4101: 'work': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(186): warning C4101: 'ptr': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(235): warning C4101: 'k': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(235): warning C4101: 'j': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(235): warning C4101: 'nextDFS': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(291): warning C4101: 'tmp': unreferenced local variable
+c:\users\luke\desktop\lab5\lab5\main.c(315): warning C4715: 'getPrimeVal': not all control paths return a value
   lab5.vcxproj -> C:\Users\Luke\Desktop\lab5\Debug\lab5.exe
